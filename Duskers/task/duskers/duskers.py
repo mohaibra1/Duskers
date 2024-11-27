@@ -30,17 +30,49 @@ def get_input(prompt, valid_options):
         print("Invalid input")
 
 def robot_display():
-    print("""__________(LOG)__________________________________________________(LOG)__________
+    while True:
+        print("""
 +==============================================================================+
-
-
-                                 (ROBOT IMAGES)
-
-
+  $   $$$$$$$   $  |  $   $$$$$$$   $  |  $   $$$$$$$   $
+  $$$$$     $$$$$  |  $$$$$     $$$$$  |  $$$$$     $$$$$
+      $$$$$$$      |      $$$$$$$      |      $$$$$$$
+     $$$   $$$     |     $$$   $$$     |     $$$   $$$
+     $       $     |     $       $     |     $       $
 +==============================================================================+
 |                  [Ex]plore                          [Up]grade                |
 |                  [Save]                             [M]enu                   |
 +==============================================================================+""")
+        choice = get_input("Your command: ", ['ex', 'up','save','m'])
+
+        if choice.lower() == 'ex':
+            return False
+        elif choice.lower() == 'up':
+            return False
+        elif choice.lower() =='save':
+            print('Coming SOON! Thanks for playing!')
+            return False
+        elif choice.lower() =='m':
+            print("""    
+              |==========================|
+              |            MENU          |
+              |                          |
+              | [Back] to game           |
+              | Return to [Main] Menu    |
+              | [Save] and exit          |
+              | [Exit] game              |
+              |==========================|""")
+            choice = get_input("Your command: ", ['back', 'main', 'save', 'exit'])
+            if choice.lower() == 'back':
+                continue
+            elif  choice.lower() == 'main':
+                return True
+            elif choice.lower() =='exit':
+                return False
+            elif choice.lower() =='save':
+                print('Coming SOON! Thanks for playing!')
+                return False
+        # elif choice.lower() == 'menu':  # exit
+        #     break
 
 def play_game():
     name = input('Enter your name:\n')
@@ -52,8 +84,10 @@ def play_game():
         choice = get_input("Your command: ", ['yes', 'no', 'menu'])
 
         if choice.lower() == 'yes':
-            robot_display()
-            return False
+           if not robot_display():
+                return False
+           else:
+               return True
         elif choice.lower() == 'no':
             print("How about now.")
         elif choice.lower() == 'menu':
