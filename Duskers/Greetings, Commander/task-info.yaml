@@ -1,0 +1,21 @@
+type: edu
+custom_name: "Greetings, Commander!"
+files:
+  - name: duskers/duskers.py
+    visible: true
+    learner_created: false
+  - name: test/__init__.py
+    visible: false
+    learner_created: false
+  - name: test/tests.py
+    visible: false
+    learner_created: false
+  - name: tests.py
+    visible: false
+    learner_created: false
+feedback_link: https://hyperskill.org/projects/136/stages/724/implement#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Wed, 27 Nov 2024 07:40:16 UTC"
+record: -1
