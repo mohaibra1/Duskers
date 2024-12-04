@@ -1,3 +1,6 @@
+import datetime
+import os.path
+import re
 import sys
 import random
 
@@ -6,6 +9,7 @@ default_names_locations = ['high street', 'Green park', 'Destroyed Arch']
 locations = []
 my_list = []
 collect_titanium = []
+player_name = ''
 def welcome_note():
     welcome = r"""      ######*   ##*   ##*  #######*  ##*  ##*  #######*  ######*   #######*
      ##*  ##*  ##*   ##*  ##*       ##* ##*   ##*       ##*  ##*  ##*
@@ -91,6 +95,30 @@ def explore():
             print('Invalid input')
 
 
+def save_game():
+    print("""select save slot: 
+    [1] empty
+    [2] empty
+    [3] empty""")
+    while True:
+        choice = input('Your command: ')
+        if choice.isdigit():
+            if 0 < int(choice) < 4:
+                date = datetime.datetime.now()
+                str_game = f"{player_name} Titanium: {titanium} Robots: 3 Last save: {date}"
+                with open('save_file.txt', 'a') as save_file:
+                    save_file.write(str_game + '\n')
+
+                print("""           
+                |==============================|
+                |    GAME SAVED SUCCESSFULLY   |
+                |==============================|""")
+                break
+        elif choice == 'back':
+            robot_display()
+            break
+        else:
+            print('Invalid input')
 def robot_display():
     while True:
         print(f"""
@@ -116,8 +144,7 @@ def robot_display():
             print('Coming SOON! ', end='')
             return False
         elif choice.lower() =='save':
-            print('Coming SOON! Thanks for playing!')
-            return False
+            save_game()
         elif choice.lower() =='m':
             print("""    
               |==========================|
@@ -136,14 +163,16 @@ def robot_display():
             elif choice.lower() =='exit':
                 return False
             elif choice.lower() =='save':
-                print('Coming SOON! Thanks for playing!')
+                save_game()
                 return False
         # elif choice.lower() == 'menu':  # exit
         #     break
 
 def play_game():
+    global player_name
     name = input('Enter your name:\n')
     print(f'Greetings, commander {name}!')
+    player_name = name
 
     while True:
         print('Are you ready to begin?')
@@ -164,21 +193,68 @@ def play_game():
 
 def menu():
     welcome_note()
-    print('[Play]')
+    print('[New] Game')
+    print('[Load] Game')
     print('[High] Scores')
     print('[Help]')
     print('[Exit]')
+
+
+def saved_game():
+    global titanium, player_name
+    save_lines = []
+    print('Select save slot: ')
+    if os.path.isfile('save_file.txt'):
+        with open('save_file.txt', 'r') as save_file:
+            index = 1
+            for line in save_file.readlines():
+                print(f"    [{index}] {line.strip()}")
+                save_lines.append(line.strip())
+                index += 1
+    subtract = 3 - len(save_lines)
+    if subtract < 3 or subtract == 3:
+        for i in range(subtract):
+            print(f"    [{i+1}] empty")
+
+    while True:
+        command = input('Your command: ')
+        if command.isdigit():
+            if len(save_lines) > 0:
+                command = int(command) - 1
+                match = re.search(r'Titanium:\s*(\d+)', save_lines[int(command)])
+                parts = save_lines[int(command)].split("Titanium:")
+                player_name = parts[0].strip()
+                if match:
+                    titanium = int(match.group(1))
+                print("""
+                        |==============================|
+                        |    GAME LOADED SUCCESSFULLY  |
+                        |==============================|""")
+                print(f"Welcome back, commander {player_name}!")
+                break
+            else:
+                print("Empty slot!")
+                print("      Select save slot: ")
+                for i in range(3):
+                    print(f"{i+1} empty")
+        elif command.lower() == 'back':
+            break
+        else:
+            print('Invalid input')
 
 def main():
     menu()
 
     while True:
-        choice = get_input("Your command: ", ['play','high', 'help', 'exit'])
+        choice = get_input("Your command: ", ['new','load', 'high', 'help', 'exit'])
 
-        if choice.lower() == 'play':
+        if choice.lower() == 'new':
             if not play_game():
                 break
             menu()
+        elif choice.lower() == 'load':
+            saved_game()
+            robot_display()
         elif choice.lower() == 'high':
             highscore()
             menu()
